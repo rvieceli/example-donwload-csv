@@ -12,30 +12,58 @@ It also uses [`Readable.from`](https://nodejs.org/api/stream.html#streamreadable
 
 ## Running
 
-1. Install dependencies
+This project uses `docker compose`:
 
 ```sh
-npm install
+docker compose up -d
 ```
 
-2. Run `express` server
+The startup sequence is:
+
+```mermaid
+stateDiagram-v2
+    direction LR
+
+    nginx: Load Balance
+    db: Postgres
+    seed: Seed
+    app: Application
+
+    [*] --> db
+
+    db --> seed
+
+    seed --> app
+
+    state app {
+        direction LR
+        app1
+        app2
+    }
+
+    app --> nginx
+
+
+    nginx --> [*]
+
+```
+
+To destroy the services, including volumes and images:
 
 ```sh
-npm run start
+docker compose down --volumes --rmi all
 ```
 
 ## Testing
 
 ### In the browser
 
-The **url** `http://localhost:3000` will download a 10.000 line csv file. But this `endpoint` has two `query params`:
+The **url** `http://localhost/download-csv` will download a 10.000 line csv file. But this `endpoint` has two `query params`:
 
 1. `size` is the number of lines
-2. `throttle` is now much time in `ms` to wait for each line
 
-> Examples  
-> `http://localhost:3000/?size=50000` will download a csv with 50k lines.  
-> `http://localhost:3000/?size=500&throttle=100` will download a csv with 500 lines, throttling `100ms` per line.
+> Examples
+> `http://localhost/download-csv/?size=50000` will download a csv with 50k lines.
 
 ### With `curl`
 
@@ -43,12 +71,12 @@ The `url` and `query params` are the same.
 
 ```sh
 # this command to see the lines building up
-curl http://localhost:3000/\?size\=500\&throttle\=100
+curl http://localhost/download-csv?size=500
 ```
 
 ```sh
 # this command to download the file, and see the progress
-url http://localhost:3000/\?size\=500\&throttle\=100 -o ./file.csv
+curl http://localhost/download-csv?size=500 -o ./file.csv
 ```
 
 ### Concurrency
