@@ -18,6 +18,12 @@ This project uses `docker compose`:
 docker compose up -d
 ```
 
+or
+
+```sh
+npm run docker:up
+```
+
 The startup sequence is:
 
 ```mermaid
@@ -52,6 +58,12 @@ To destroy the services, including volumes and images:
 
 ```sh
 docker compose down --volumes --rmi all
+```
+
+or
+
+```sh
+npm run docker:down
 ```
 
 ## Testing

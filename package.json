@@ -6,7 +6,9 @@
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
-    "seed": "node src/seed.js"
+    "seed": "node src/seed.js",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker compose down --volumes --rmi all"
   },
   "keywords": [],
   "author": "",
